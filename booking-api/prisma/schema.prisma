@@ -1,0 +1,191 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  role_id Int @id @default(autoincrement())
+  name String @unique
+  description String?
+
+  users User[]
+}
+
+model User {
+  user_id Int @id @default(autoincrement())
+  role_id Int
+  email String @unique
+  phone String?
+  password_hash String
+  name String
+  status UserStatus @default(active)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  role Role @relation(fields: [role_id], references: [role_id])
+  bookingAsCustomer Booking[] @relation("CustomerBookings")
+  bookingAsStaff Booking[] @relation("StaffBookings")
+  availability Availability[]
+  blockedSlots BlockedSlot[]
+  auditLogs AuditLog[]
+}
+
+
+enum UserStatus {
+  active
+  inactive
+}
+
+/// ============
+/// SERVICES & RESOURCES
+/// ============
+model Service {
+  service_id Int @id @default(autoincrement())
+  name String
+  description String?
+  duration_min Int
+  price Decimal
+  status ServiceStatus @default(active)
+
+  bookings Booking[]
+}
+
+enum ServiceStatus {
+  active
+  inactive
+}
+
+model Resource {
+  resource_id Int @id @default(autoincrement())
+  name String
+  description String?
+  status ResourceStatus @default(available)
+
+  availability Availability[]
+  bookings Booking[]
+  blockedSlots BlockedSlot[]
+}
+
+enum ResourceStatus {
+  available
+  unavailable
+}
+
+/// ============
+/// SCHEDULES
+/// ============
+
+model Availability {
+  availability_id Int @id @default(autoincrement())
+  resource_id Int?
+  user_id Int?
+  day_of_week DayOfWeek
+  start_datetime DateTime
+  end_datetime DateTime
+
+  user User? @relation(fields: [user_id], references: [user_id])
+  resource Resource? @relation(fields: [resource_id], references: [resource_id])
+}
+enum DayOfWeek {
+  Mon
+  Tue
+  Wed
+  Thu
+  Fri
+  Sat
+  Sun
+}
+
+model BlockedSlot {
+  blocked_id Int @id @default(autoincrement())
+  user_id Int
+  resource_id Int
+  start_datetime DateTime
+  end_datetime DateTime
+
+  user User? @relation(fields: [user_id], references: [user_id])
+  resource Resource? @relation(fields: [resource_id], references: [resource_id])
+}
+/// ============
+/// BOOKINGS
+/// ============
+
+model Booking {
+  booking_id Int @id @default(autoincrement())
+  customer_id Int
+  staff_id Int
+  resource_id Int
+  service_id Int
+  start_datetime DateTime
+  end_datetime DateTime
+  notes String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  status BookingStatus @default(active)
+  staff User @relation("StaffBookings", fields: [staff_id], references: [user_id])
+  customer User @relation("CustomerBookings", fields: [customer_id], references: [user_id])
+  service Service @relation(fields: [service_id], references: [service_id])
+  resource Resource @relation(fields: [resource_id], references: [resource_id])
+  payments Payment[]
+}
+
+enum BookingStatus {
+  active
+  inactive
+}
+
+/// ============
+/// PAYMENTS
+/// ============
+model Payment {
+  payment_id      Int @id @default(autoincrement())
+  booking_id      Int
+  amount          Decimal
+  method          PaymentMethod
+  status          PaymentStatus @default(pending)
+  transaction_ref String?
+  created_at      DateTime @default(now())
+
+  booking Booking @relation(fields: [booking_id], references: [booking_id])
+}
+
+enum PaymentMethod {
+  credit_card
+  paypal
+  cash
+  bank_transfer
+}
+
+enum PaymentStatus {
+  pending
+  paid
+  failed
+  refunded
+}
+
+/// ============
+/// AUDIT LOGS
+/// ============
+model AuditLog {
+  log_id     Int      @id @default(autoincrement())
+  user_id    Int?
+  action     String
+  entity     String?
+  entity_id  Int?
+  details    String?
+  created_at DateTime @default(now())
+
+  user User? @relation(fields: [user_id], references: [user_id])
+}
