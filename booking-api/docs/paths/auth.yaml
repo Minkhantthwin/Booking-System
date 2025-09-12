@@ -27,30 +27,6 @@ paths:
                     type: string
         '400':
           description: Validation error
-  # /user/login:
-  #   post:
-  #     tags: [Auth]
-  #     summary: Login
-  #     requestBody:
-  #       required: true
-  #       content:
-  #         application/json:
-  #           schema:
-  #             $ref: '#/components/schemas/LoginRequest'
-  #     responses:
-  #       '200':
-  #         description: OK
-  #         content:
-  #           application/json:
-  #             schema:
-  #               type: object
-  #               properties:
-  #                 user:
-  #                   $ref: '#/components/schemas/UserPublic'
-  #                 token:
-  #                   type: string
-  #       '401':
-  #         description: Unauthorized
   /user/profile:
     get:
       tags: [Auth]
@@ -71,3 +47,46 @@ paths:
           description: Unauthorized
         '404':
           description: Not found
+    put:
+      tags: [Auth]
+      summary: Update current user profile (self). Admins may include role_id & status.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/UserPublic'
+        '400': { description: Bad request }
+        '403': { description: Forbidden }
+        '404': { description: Not found }          
+  /user/{id}:
+    delete:
+      tags: [Auth]
+      summary: Delete a user (self or admin)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '204':
+          description: Deleted
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '409':
+          description: Conflict (related records)        

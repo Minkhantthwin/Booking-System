@@ -1,5 +1,6 @@
 const swaggerJsdoc = require('swagger-jsdoc');
 
+
 const options = {
   definition: {
     openapi: '3.0.3',
@@ -13,20 +14,6 @@ const options = {
       securitySchemes: {
         bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }
       },
-      schemas: {
-        UserPublic: {
-          type: 'object',
-            properties: {
-              user_id: { type: 'integer' },
-              role_id: { type: 'integer' },
-              email: { type: 'string', format: 'email' },
-              phone: { type: 'string', nullable: true },
-              name: { type: 'string' },
-              status: { type: 'string', enum: ['active', 'inactive'] },
-              created_at: { type: 'string', format: 'date-time' }
-            }
-        }
-      }
     }
   },
   apis: [

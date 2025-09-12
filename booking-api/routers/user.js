@@ -102,13 +102,9 @@ router.get('/profile', auth(true), async (req, res) => {
 });
 
 router.put('/profile', auth(true), async (req, res) => {
-  const id = parseInt(req.params.id);
-  if(isNaN(id)) return res.status(400).json({msg: 'Invalid id'});
+  const userIdToUpdate = req.user.userId;
 
   const isAdmin = req.user.role === 5 || req.user.roleId === 5;
-  if (!isAdmin && req.user.userId !== id) {
-    return res.status(403).json({ msg: 'Forbidden' });
-  }
 
   const { role_id, email, phone, password, name, status } = req.body;
 
@@ -129,7 +125,7 @@ router.put('/profile', auth(true), async (req, res) => {
   }
   try {
     const updated = await prisma.user.update({
-      where: { user_id: id },
+      where: { user_id: userIdToUpdate },
       data,
       select: {
         user_id: true,
@@ -153,7 +149,7 @@ router.delete('/:id', auth(true), async (req, res) => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) return res.status(400).json({ msg: 'Invalid id' });
 
-  const isAdmin = req.user.role === 4 || req.user.roleId === 4;
+  const isAdmin = req.user.role === 5 || req.user.roleId === 5;
   if (!isAdmin && req.user.userId !== id) {
     return res.status(403).json({ msg: 'Forbidden' });
   }
@@ -163,7 +159,7 @@ router.delete('/:id', auth(true), async (req, res) => {
     return res.status(204).send();
   } catch (e) {
     if (e.code === 'P2025') return res.status(404).json({ msg: 'User not found' });
-    // FK constraint (e.code may be P2003) -> cannot hard delete
+
     if (e.code === 'P2003') {
       return res.status(409).json({ msg: 'User has related records. Consider deactivating instead.' });
     }

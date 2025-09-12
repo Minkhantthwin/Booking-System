@@ -46,6 +46,17 @@ components:
         password:
           type: string
           format: password
+    UserUpdateRequest:
+      type: object
+      properties:
+        email: { type: string, format: email }
+        phone: { type: string }
+        name: { type: string }
+        password: { type: string }
+        role_id: { type: integer, description: Admin only }
+        status:
+          type: string
+          enum: [active, inactive]
     Role:
       type: object
       properties:

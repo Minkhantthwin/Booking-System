@@ -11,11 +11,13 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "js-yaml": "^4.1.0",
+    "prisma-json-schema-generator": "^5.1.5",
     "typescript": "^5.9.2"
   },
-    "scripts": {
+  "scripts": {
+    "generate": "prisma generate && node scripts/generate-openapi-schemas.js",
     "dev": "nodemon index.js",
     "start": "node index.js"
   }
 }
-
