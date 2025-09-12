@@ -6,6 +6,7 @@ const prisma = require('./prismaClient');
 
 const cors = require('cors');
 app.use(cors());
+app.use(express.json());
 
 const { userRouter } = require('./routers/user');
 app.use("/user", userRouter);
