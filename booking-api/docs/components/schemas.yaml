@@ -1,0 +1,74 @@
+components:
+  schemas:
+    UserPublic:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        role_id:
+          type: integer
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          nullable: true
+        name:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive]
+        created_at:
+          type: string
+          format: date-time
+    RegisterRequest:
+      type: object
+      required: [role_id, email, password, name]
+      properties:
+        role_id:
+          type: integer
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        password:
+          type: string
+        name:
+          type: string
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+    Role:
+      type: object
+      properties:
+        role_id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+    RoleCreateRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    RoleUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+  

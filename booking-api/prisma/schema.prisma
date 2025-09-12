@@ -94,7 +94,7 @@ model Availability {
   start_datetime DateTime
   end_datetime DateTime
 
-  user User? @relation(fields: [user_id], references: [user_id])
+  user User? @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   resource Resource? @relation(fields: [resource_id], references: [resource_id])
 }
 enum DayOfWeek {
@@ -114,7 +114,7 @@ model BlockedSlot {
   start_datetime DateTime
   end_datetime DateTime
 
-  user User? @relation(fields: [user_id], references: [user_id])
+  user User? @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   resource Resource? @relation(fields: [resource_id], references: [resource_id])
 }
 /// ============
@@ -134,8 +134,8 @@ model Booking {
   updated_at DateTime @updatedAt
 
   status BookingStatus @default(active)
-  staff User @relation("StaffBookings", fields: [staff_id], references: [user_id])
-  customer User @relation("CustomerBookings", fields: [customer_id], references: [user_id])
+  staff User @relation("StaffBookings", fields: [staff_id], references: [user_id], onDelete: Cascade)
+  customer User @relation("CustomerBookings", fields: [customer_id], references: [user_id], onDelete: Cascade)
   service Service @relation(fields: [service_id], references: [service_id])
   resource Resource @relation(fields: [resource_id], references: [resource_id])
   payments Payment[]
@@ -158,7 +158,7 @@ model Payment {
   transaction_ref String?
   created_at      DateTime @default(now())
 
-  booking Booking @relation(fields: [booking_id], references: [booking_id])
+  booking Booking @relation(fields: [booking_id], references: [booking_id], onDelete: Cascade)
 }
 
 enum PaymentMethod {
@@ -187,5 +187,5 @@ model AuditLog {
   details    String?
   created_at DateTime @default(now())
 
-  user User? @relation(fields: [user_id], references: [user_id])
+  user User? @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
 }
