@@ -24,7 +24,8 @@ function auth(required = true) {
 }
 
 function requireAdmin(req, res, next) {
-  if (!req.user || (req.user.role !== 5 && req.user.roleId !== 5)) {
+  const roleName = req.user?.role?.name || req.user?.role; 
+  if (!req.user || roleName !== 'Admin') {
     return res.status(403).json({ message: 'Admin only' });
   }
   next();
