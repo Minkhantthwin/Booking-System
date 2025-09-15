@@ -1,0 +1,79 @@
+tags:
+  - name: Service
+    description: Manage bookable services
+
+paths:
+  /service:
+    post:
+      tags: [Service]
+      summary: Create a new service
+      description: Creates a service with name, optional description, price, and duration in minutes.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  service:
+                    $ref: '#/components/schemas/Service'
+        '400':
+          description: Validation error (missing or invalid name, price, or duration_min)
+        '409':
+          description: Conflict (service name already exists)
+        '500':
+          description: Internal server error
+    get:
+      tags: [Service]
+      summary: Get all services
+      description: Retrieves a list of all available services.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  services:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Service'
+        '500':
+          description: Internal server error
+
+  /service/{id}:
+    get:
+      tags: [Service]
+      summary: Get service by ID
+      description: Retrieves a specific service by its ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The service ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  service:
+                    $ref: '#/components/schemas/Service'
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error

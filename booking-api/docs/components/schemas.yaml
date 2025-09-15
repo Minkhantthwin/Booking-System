@@ -82,4 +82,39 @@ components:
           type: string
         description:
           type: string
-  
+
+    Service:
+      type: object
+      properties:
+        service_id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        price:
+          type: number
+          minimum: 0
+        duration_min:
+          type: integer
+          minimum: 1
+        created_at:
+          type: string
+          format: date-time
+
+    ServiceCreateRequest:
+      type: object
+      required: [name, price, duration_min]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        price:
+          type: number
+          minimum: 0
+        duration_min:
+          type: integer
+          minimum: 1

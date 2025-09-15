@@ -2,16 +2,20 @@ const express = require('express');
 const app = express();
 
 const prisma = require('./prismaClient');
+const { userRouter } = require('./routers/user');
+const { roleRouter } = require('./routers/role');
+const { serviceRouter } = require('./routers/service');
 
 const cors = require('cors');
 app.use(cors());
 app.use(express.json());
 
-const { userRouter } = require('./routers/user');
+
 app.use("/user", userRouter);
 
-const { roleRouter } = require('./routers/role');
 app.use("/role", roleRouter);
+
+app.use("/service", serviceRouter);
 
 app.get('/info', (req, res) => {
   res.json({msg: 'Booking app'});
