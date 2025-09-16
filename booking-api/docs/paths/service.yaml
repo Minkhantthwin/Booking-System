@@ -36,6 +36,8 @@ paths:
       tags: [Service]
       summary: Get all services
       description: Retrieves a list of all available services.
+      security:
+        - bearerAuth: []      
       responses:
         '200':
           description: OK
@@ -56,6 +58,8 @@ paths:
       tags: [Service]
       summary: Get service by ID
       description: Retrieves a specific service by its ID.
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id

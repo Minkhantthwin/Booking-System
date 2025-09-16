@@ -154,3 +154,28 @@ components:
         duration_min:
           type: integer
           minimum: 1
+
+    # Resource schemas
+    Resource:
+      type: object
+      properties:
+        resource_id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [available, unavailable]
+          default: available
+    ResourceCreateRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true

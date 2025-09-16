@@ -5,6 +5,7 @@ const prisma = require('./prismaClient');
 const { userRouter } = require('./routers/user');
 const { roleRouter } = require('./routers/role');
 const { serviceRouter } = require('./routers/service');
+const { resourceRouter } = require('./routers/resource');
 
 const cors = require('cors');
 app.use(cors());
@@ -16,6 +17,8 @@ app.use("/user", userRouter);
 app.use("/role", roleRouter);
 
 app.use("/service", serviceRouter);
+
+app.use("/resource", resourceRouter);
 
 app.get('/info', (req, res) => {
   res.json({msg: 'Booking app'});

@@ -1,0 +1,79 @@
+tags:
+  - name: Resource
+    description: Manage bookable resources
+
+paths:
+  /resource:
+    post:
+      tags: [Resource]
+      summary: Create a new resource
+      description: Creates a resource with name and optional description.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResourceCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  resource:
+                    $ref: '#/components/schemas/Resource'
+        '400':
+          description: Validation error (missing required fields)
+        '409':
+          description: Conflict (resource name already exists)
+        '500':
+          description: Internal server error
+    get:
+      tags: [Resource]
+      summary: Get all resources
+      description: Retrieves a list of all available resources.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  resources:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Resource'
+        '500':
+          description: Internal server error
+
+  /resource/{id}:
+    get:
+      tags: [Resource]
+      summary: Get resource by ID
+      description: Retrieves a specific resource by its ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The resource ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  resource:
+                    $ref: '#/components/schemas/Resource'
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
