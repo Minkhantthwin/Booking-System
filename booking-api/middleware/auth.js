@@ -31,4 +31,12 @@ function requireAdmin(req, res, next) {
   next();
 }
 
-module.exports = { auth, requireAdmin };
+function requirePersonal(req, res, next) {
+    const roleName = req.user?.role?.name || req.user?.role;
+    if (!req.user || (roleName !== 'Admin' && roleName !== 'Staff')) {
+      return res.status(403).json({ message: 'Staff or Admin only' });
+    }
+    next();
+}
+
+module.exports = { auth, requireAdmin, requirePersonal };

@@ -3,30 +3,53 @@ tags:
     description: Authentication & user operations
 
 paths:
-  /user/register:
-    post:
+  /user:
+    get:
       tags: [Auth]
-      summary: Register a new user
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RegisterRequest'
+      summary: Get all users
+      description: Retrieves a list of all users (Admin & Staff only). Supports pagination and optional filtering by name or email.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Page number (starts at 1)
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+          description: Number of users per page (max 100)
+        - in: query
+          name: filter
+          schema:
+            type: string
+            enum: [name, email]
+          description: Field to filter by (optional)
+        - in: query
+          name: value
+          schema:
+            type: string
+          description: Search value for the filter (required if filter is provided, case-insensitive partial match)
       responses:
-        '201':
-          description: Created
+        '200':
+          description: OK
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  user:
-                    $ref: '#/components/schemas/UserPublic'
-                  token:
-                    type: string
+                $ref: '#/components/schemas/UsersList'
         '400':
-          description: Validation error
+          description: Bad request (invalid filter or missing value)
+        '404':
+          description: No users found
+        '500':
+          description: Internal server error
   /user/profile:
     get:
       tags: [Auth]
@@ -89,4 +112,4 @@ paths:
         '404':
           description: Not found
         '409':
-          description: Conflict (related records)        
+          description: Conflict (related records)

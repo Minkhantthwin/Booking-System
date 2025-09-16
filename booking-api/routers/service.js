@@ -12,5 +12,11 @@ router.get('/', auth(true), serviceController.getAllServices);
 // Get service by ID
 router.get('/:id', auth(true), serviceController.getServiceById);
 
+// Update service
+router.put('/:id', auth(true), serviceController.updateService);
+
+// Delete service
+router.delete('/:id', auth(true), serviceController.deleteService);
+
 
 module.exports = { serviceRouter: router };

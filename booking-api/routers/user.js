@@ -10,6 +10,9 @@ router.post('/register', userController.register);
 // Login
 router.post('/login', userController.login);
 
+// Get all users (Admin & Staffs only)
+router.get('/', auth(true), userController.getAllUsers);
+
 // Profile
 router.get('/profile', auth(true), userController.getProfile);
 router.put('/profile', auth(true), userController.updateProfile);

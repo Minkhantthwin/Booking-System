@@ -77,3 +77,70 @@ paths:
           description: Not found
         '500':
           description: Internal server error
+    put:
+      tags: [Service]
+      summary: Update service
+      description: Updates an existing service by ID. All fields are optional for partial updates.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The service ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceUpdateRequest'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  service:
+                    $ref: '#/components/schemas/Service'
+        '400':
+          description: Validation error (invalid ID or fields)
+        '404':
+          description: Service not found
+        '409':
+          description: Conflict (service name already exists)
+        '500':
+          description: Internal server error
+    delete:
+      tags: [Service]
+      summary: Delete service
+      description: Deletes a service by ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The service ID
+      responses:
+        '200':
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Service deleted"
+        '400':
+          description: Validation error (invalid ID)
+        '404':
+          description: Service not found
+        '500':
+          description: Internal server error

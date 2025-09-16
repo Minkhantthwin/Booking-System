@@ -94,6 +94,65 @@ async function login(req, res) {
   }
 }
 
+async function getAllUsers(req, res) {
+  try {
+    const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+    const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 10, 1), 100);
+    const skip = (page -1) * limit;
+
+    const filter = req.query.filter?.trim();
+    const value = req.query.value?.trim();
+
+    if (filter && !['name', 'email'].includes(filter)){
+      return res.status(400).json({ msg: 'Invalid filter field' });
+    }
+
+    if (filter && (!value || value === '')){
+      return res.status(400).json({ msg: 'Value is required when filter is provided.' });
+    }
+
+    const select = {
+      user_id: true,
+      role_id: true,
+      email: true,
+      phone: true,
+      name: true,
+      status: true,
+      created_at: true,
+    };
+
+    const where = {};
+    if (filter && value) {
+      where[filter] = {
+        contains: value,
+        mode: 'insensitive' //Case-insensitive search
+      };
+    }
+
+    const [user, total] = await Promise.all([
+      prisma.user.findMany({
+        where,
+        select,
+        skip,
+        take:limit,
+        orderBy: {created_at: 'desc'}
+      }),
+      prisma.user.count()
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+    
+    res.json({
+      user,
+      pagination: {page, limit, total, totalPages }
+    });
+
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ msg: 'Fetch users failed' });
+  }
+}
+
 async function getProfile(req, res) {
   try {
     const user = await prisma.user.findUnique({
@@ -189,5 +248,6 @@ module.exports = {
   login,
   getProfile,
   updateProfile,
-  deleteUser
+  deleteUser,
+  getAllUsers
 };

@@ -57,6 +57,28 @@ components:
         status:
           type: string
           enum: [active, inactive]
+    UsersList:
+      type: object
+      properties:
+        user:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserPublic'
+        pagination:
+          type: object
+          properties:
+            page:
+              type: integer
+              description: Current page number
+            limit:
+              type: integer
+              description: Number of items per page
+            total:
+              type: integer
+              description: Total number of users
+            totalPages:
+              type: integer
+              description: Total number of pages
     Role:
       type: object
       properties:
@@ -106,6 +128,20 @@ components:
     ServiceCreateRequest:
       type: object
       required: [name, price, duration_min]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        price:
+          type: number
+          minimum: 0
+        duration_min:
+          type: integer
+          minimum: 1
+    ServiceUpdateRequest:
+      type: object
       properties:
         name:
           type: string
