@@ -36,6 +36,8 @@ paths:
       tags: [Resource]
       summary: Get all resources
       description: Retrieves a list of all available resources.
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: OK
@@ -56,6 +58,8 @@ paths:
       tags: [Resource]
       summary: Get resource by ID
       description: Retrieves a specific resource by its ID.
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -75,5 +79,72 @@ paths:
                     $ref: '#/components/schemas/Resource'
         '404':
           description: Not found
+        '500':
+          description: Internal server error
+    put:
+      tags: [Resource]
+      summary: Update resource by ID
+      description: Updates a specific resource's details by its ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The resource ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResourceUpdateRequest'
+      responses:
+        '200':
+          description: Resource Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  resource:
+                    $ref: '#/components/schemas/Resource'
+        '400':
+          description: Validation error (invalid ID or fields)
+        '404':
+          description: Resource Not found
+        '409':
+          description: Conflict (resource name already exists)
+        '500':
+          description: Internal server error
+    delete:
+      tags: [Resource]
+      summary: Delete resource by ID
+      description: Deletes a specific resource by its ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The resource ID
+      responses:
+        '200':
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Resource deleted"
+        '400':
+          description: Validation error (invalid ID)
+        '404':
+          description: Resource not found
         '500':
           description: Internal server error

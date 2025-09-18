@@ -1,0 +1,134 @@
+tags:
+  - name: Availability
+    description: Manage staff/resource availabilities
+
+paths:
+  /availability:
+    post:
+      tags: [Availability]
+      summary: Create availability
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AvailabilityCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  availability:
+                    $ref: '#/components/schemas/Availability'
+        '400': { description: Validation error }
+        '401': { description: Unauthorized }
+        '403': { description: Forbidden }
+        '500': { description: Internal server error }
+    get:
+      tags: [Availability]
+      summary: List availabilities
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: query
+          name: user_id
+          schema: { type: integer }
+        - in: query
+          name: resource_id
+          schema: { type: integer }
+        - in: query
+          name: day_of_week
+          schema:
+            type: string
+            enum: [Mon, Tue, Wed, Thu, Fri, Sat, Sun]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  availabilities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Availability'
+        '400': { description: Validation error }
+        '401': { description: Unauthorized }
+        '403': { description: Forbidden }
+        '500': { description: Internal server error }
+
+  /availability/{id}:
+    get:
+      tags: [Availability]
+      summary: Get availability by ID
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  availability:
+                    $ref: '#/components/schemas/Availability'
+        '400': { description: Invalid ID }
+        '401': { description: Unauthorized }
+        '403': { description: Forbidden }
+        '404': { description: Not found }
+        '500': { description: Internal server error }
+    put:
+      tags: [Availability]
+      summary: Update availability
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AvailabilityUpdateRequest'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  availability:
+                    $ref: '#/components/schemas/Availability'
+        '400': { description: Validation error }
+        '401': { description: Unauthorized }
+        '403': { description: Forbidden }
+        '404': { description: Not found }
+        '500': { description: Internal server error }
+    delete:
+      tags: [Availability]
+      summary: Delete availability
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '204': { description: Deleted }
+        '400': { description: Invalid ID }
+        '401': { description: Unauthorized }
+        '403': { description: Forbidden }
+        '404': { description: Not found }
+        '500': { description: Internal server error }

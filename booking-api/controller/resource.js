@@ -39,8 +39,64 @@ async function getResourceById(req, res){
     }
 }
 
+async function updateResource(req, res) {
+    const id = parseInt(req.params.id);
+    if (Number.isNaN(id) || id <= 0) {
+        return res.status(400).json({ message: 'Valid resource ID required' });
+    }
+    const { name, description } = req.body;
+    const data = {};
+    if (name !== undefined) {
+        if (typeof name !== 'string' || name.trim() === '') {
+            return res.status(400).json({ message: 'Valid name required' });
+        }
+        data.name = name;
+    }
+    if (description !== undefined) {
+        if (typeof description !== 'string' || description.trim() === '') {
+            return res.status(400).json({ message: 'Valid description required' });
+        }
+        data.description = description;
+    }
+    if (Object.keys(data).length === 0) {
+        return res.status(400).json({ message: 'No valid fields to update' });
+    }
+    try {
+        const resource = await prisma.resource.update({ where: { resource_id: id }, data });
+        res.status(200).json({ resource });
+    } catch (e) {
+        if (e.code === 'P2025') {
+            return res.status(404).json({ message: 'Resource Not Found' });
+        }
+        if (e.code === 'P2002') {
+            return res.status(409).json({ message: 'Resource name already exists' });
+        }
+        console.error(e);
+        res.status(500).json({ message: 'Resource update failed' });
+    }  
+}
+
+async function deleteResource(req, res) {
+    const id = parseInt(req.params.id, 10);
+    if (Number.isNaN(id) || id <= 0) {
+        return res.status(400).json({ message: 'Valid resource ID required' });
+    }
+    try {
+        await prisma.resource.delete({ where: { resource_id: id } });
+        res.status(204).send();
+    } catch (e) {
+        if (e.code === 'P2025') {
+            return res.status(404).json({ message: 'Resource Not Found' });
+        }
+        console.error(e);
+        res.status(500).json({ message: 'Resource deletion failed' });
+    }
+}
+
 module.exports = {
     createResource,
     getAllResources,
-    getResourceById
+    getResourceById,
+    updateResource,
+    deleteResource
 };

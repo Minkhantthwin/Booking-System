@@ -6,6 +6,7 @@ const { userRouter } = require('./routers/user');
 const { roleRouter } = require('./routers/role');
 const { serviceRouter } = require('./routers/service');
 const { resourceRouter } = require('./routers/resource');
+const { availabilityRouter } = require('./routers/availability');
 
 const cors = require('cors');
 app.use(cors());

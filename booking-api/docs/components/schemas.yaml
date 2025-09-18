@@ -179,3 +179,48 @@ components:
         description:
           type: string
           nullable: true
+    ResourceUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [available, unavailable]
+
+    # Availability schemas
+    Availability:
+      type: object
+      properties:
+        availability_id: { type: integer }
+        user_id: { type: integer, nullable: true }
+        resource_id: { type: integer, nullable: true }
+        day_of_week:
+          type: string
+          enum: [Mon, Tue, Wed, Thu, Fri, Sat, Sun]
+        start_datetime: { type: string, format: date-time }
+        end_datetime: { type: string, format: date-time }
+    AvailabilityCreateRequest:
+      type: object
+      required: [day_of_week, start_datetime, end_datetime]
+      properties:
+        user_id: { type: integer, nullable: true }
+        resource_id: { type: integer, nullable: true }
+        day_of_week:
+          type: string
+          enum: [Mon, Tue, Wed, Thu, Fri, Sat, Sun]
+        start_datetime: { type: string, format: date-time }
+        end_datetime: { type: string, format: date-time }
+    AvailabilityUpdateRequest:
+      type: object
+      properties:
+        user_id: { type: integer, nullable: true }
+        resource_id: { type: integer, nullable: true }
+        day_of_week:
+          type: string
+          enum: [Mon, Tue, Wed, Thu, Fri, Sat, Sun]
+        start_datetime: { type: string, format: date-time }
+        end_datetime: { type: string, format: date-time }

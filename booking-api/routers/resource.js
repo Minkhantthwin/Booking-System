@@ -9,4 +9,8 @@ router.get('/', auth(true), ResourceController.getAllResources);
 
 router.get('/:id', auth(true), ResourceController.getResourceById);
 
+router.put('/:id', auth(true), ResourceController.updateResource);
+
+router.delete('/:id', auth(true), ResourceController.deleteResource);
+
 module.exports = { resourceRouter: router };
