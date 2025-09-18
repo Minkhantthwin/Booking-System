@@ -1,0 +1,172 @@
+tags:
+  - name: BlockedSlot
+    description: Manage blocked time slots for staff/resources
+
+paths:
+  /bslot:
+    post:
+      tags: [BlockedSlot]
+      summary: Create a blocked slot
+      description: Creates a blocked slot for a specific staff (user_id) and resource within a date-time window. Prevents overlaps.
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlockedSlotCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  blocked:
+                    $ref: '#/components/schemas/BlockedSlot'
+        '400': { description: Validation error }
+        '409': { description: Conflict (overlapping slot) }
+        '500': { description: Internal server error }
+    get:
+      tags: [BlockedSlot]
+      summary: Get blocked slots
+      description: Retrieves blocked slots, optionally filtered by user_id, resource_id, and time range overlap.
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: query
+          name: user_id
+          schema: { type: integer }
+        - in: query
+          name: resource_id
+          schema: { type: integer }
+        - in: query
+          name: from
+          schema: { type: string, format: date-time }
+          description: Return items whose end_datetime is after this value
+        - in: query
+          name: to
+          schema: { type: string, format: date-time }
+          description: Return items whose start_datetime is before this value
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  blocked:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BlockedSlot'
+        '400': { description: Validation error }
+        '500': { description: Internal server error }
+
+  /bslot/check:
+    get:
+      tags: [BlockedSlot]
+      summary: Check overlap for a proposed blocked window
+      description: Checks whether a given window overlaps existing blocked slots for the same user and resource.
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: query
+          name: user_id
+          required: true
+          schema: { type: integer }
+        - in: query
+          name: resource_id
+          required: true
+          schema: { type: integer }
+        - in: query
+          name: start_datetime
+          required: true
+          schema: { type: string, format: date-time }
+        - in: query
+          name: end_datetime
+          required: true
+          schema: { type: string, format: date-time }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  overlaps:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BlockedSlot'
+                  count:
+                    type: integer
+        '400': { description: Validation error }
+        '500': { description: Internal server error }
+
+  /bslot/{id}:
+    get:
+      tags: [BlockedSlot]
+      summary: Get blocked slot by ID
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  blocked:
+                    $ref: '#/components/schemas/BlockedSlot'
+        '400': { description: Validation error }
+        '404': { description: Not found }
+        '500': { description: Internal server error }
+    put:
+      tags: [BlockedSlot]
+      summary: Update blocked slot
+      description: Partially updates a blocked slot. Prevents overlaps.
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlockedSlotUpdateRequest'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  blocked:
+                    $ref: '#/components/schemas/BlockedSlot'
+        '400': { description: Validation error }
+        '404': { description: Not found }
+        '409': { description: Conflict (overlapping slot) }
+        '500': { description: Internal server error }
+    delete:
+      tags: [BlockedSlot]
+      summary: Delete blocked slot
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '204': { description: Deleted }
+        '400': { description: Validation error }
+        '404': { description: Not found }
+        '500': { description: Internal server error }

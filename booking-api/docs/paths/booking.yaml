@@ -1,0 +1,198 @@
+tags:
+  - name: Booking
+    description: Manage bookings
+
+paths:
+  /booking:
+    post:
+      tags: [Booking]
+      summary: Create a booking
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  booking:
+                    $ref: '#/components/schemas/Booking'
+        '400': { description: Validation error }
+        '409': { description: Conflict (overlap with booking or blocked slot) }
+        '500': { description: Internal server error }
+    get:
+      tags: [Booking]
+      summary: Get bookings
+      description: Supports filters and pagination.
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 1, default: 1 }
+        - in: query
+          name: limit
+          schema: { type: integer, minimum: 1, maximum: 100, default: 10 }
+        - in: query
+          name: customer_id
+          schema: { type: integer }
+        - in: query
+          name: staff_id
+          schema: { type: integer }
+        - in: query
+          name: resource_id
+          schema: { type: integer }
+        - in: query
+          name: service_id
+          schema: { type: integer }
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [active, inactive]
+        - in: query
+          name: from
+          schema: { type: string, format: date-time }
+        - in: query
+          name: to
+          schema: { type: string, format: date-time }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bookings:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Booking'
+                  pagination:
+                    type: object
+                    properties:
+                      page: { type: integer }
+                      limit: { type: integer }
+                      total: { type: integer }
+                      totalPages: { type: integer }
+        '400': { description: Validation error }
+        '500': { description: Internal server error }
+
+  /booking/check:
+    get:
+      tags: [Booking]
+      summary: Check overlap for a proposed booking window
+      description: Checks conflicts against existing bookings and blocked slots.
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: query
+          name: staff_id
+          required: true
+          schema: { type: integer }
+        - in: query
+          name: resource_id
+          required: true
+          schema: { type: integer }
+        - in: query
+          name: start_datetime
+          required: true
+          schema: { type: string, format: date-time }
+        - in: query
+          name: end_datetime
+          required: true
+          schema: { type: string, format: date-time }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  conflicts:
+                    type: object
+                    properties:
+                      bookings:
+                        type: array
+                        items: { $ref: '#/components/schemas/Booking' }
+                      blocked:
+                        type: array
+                        items: { $ref: '#/components/schemas/BlockedSlot' }
+                  hasConflict:
+                    type: boolean
+        '400': { description: Validation error }
+        '500': { description: Internal server error }
+
+  /booking/{id}:
+    get:
+      tags: [Booking]
+      summary: Get booking by ID
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  booking:
+                    $ref: '#/components/schemas/Booking'
+        '400': { description: Validation error }
+        '404': { description: Not found }
+        '500': { description: Internal server error }
+    put:
+      tags: [Booking]
+      summary: Update booking
+      description: Partially updates a booking. Prevents overlaps.
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingUpdateRequest'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  booking:
+                    $ref: '#/components/schemas/Booking'
+        '400': { description: Validation error }
+        '404': { description: Not found }
+        '409': { description: Conflict (overlap) }
+        '500': { description: Internal server error }
+    delete:
+      tags: [Booking]
+      summary: Delete booking
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '204': { description: Deleted }
+        '400': { description: Validation error }
+        '404': { description: Not found }
+        '500': { description: Internal server error }

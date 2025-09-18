@@ -171,7 +171,7 @@ async function updateAvailability(req, res) {
       data
     });
 
-    return res.status(200).json({ availability: updated });
+    return res.status(200).json({ availability: updated, message: 'Update successful' });
   } catch (e) {
     console.error(e);
     return res.status(500).json({ message: 'Update failed' });

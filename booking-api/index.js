@@ -7,6 +7,8 @@ const { roleRouter } = require('./routers/role');
 const { serviceRouter } = require('./routers/service');
 const { resourceRouter } = require('./routers/resource');
 const { availabilityRouter } = require('./routers/availability');
+const { bslotRouter } = require('./routers/bslot');
+const { bookingRouter } = require('./routers/booking');
 
 const cors = require('cors');
 app.use(cors());
@@ -14,12 +16,15 @@ app.use(express.json());
 
 
 app.use("/user", userRouter);
-
 app.use("/role", roleRouter);
 
 app.use("/service", serviceRouter);
 
 app.use("/resource", resourceRouter);
+app.use("/availability", availabilityRouter);
+
+app.use("/bslot", bslotRouter);
+app.use("/booking", bookingRouter);
 
 app.get('/info', (req, res) => {
   res.json({msg: 'Booking app'});

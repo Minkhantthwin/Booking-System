@@ -95,7 +95,7 @@ model Availability {
   end_datetime DateTime
 
   user User? @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  resource Resource? @relation(fields: [resource_id], references: [resource_id])
+  resource Resource? @relation(fields: [resource_id], references: [resource_id], onDelete: Cascade)
 }
 enum DayOfWeek {
   Mon
@@ -115,7 +115,7 @@ model BlockedSlot {
   end_datetime DateTime
 
   user User? @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  resource Resource? @relation(fields: [resource_id], references: [resource_id])
+  resource Resource? @relation(fields: [resource_id], references: [resource_id], onDelete: Cascade)
 }
 /// ============
 /// BOOKINGS
@@ -136,8 +136,8 @@ model Booking {
   status BookingStatus @default(active)
   staff User @relation("StaffBookings", fields: [staff_id], references: [user_id], onDelete: Cascade)
   customer User @relation("CustomerBookings", fields: [customer_id], references: [user_id], onDelete: Cascade)
-  service Service @relation(fields: [service_id], references: [service_id])
-  resource Resource @relation(fields: [resource_id], references: [resource_id])
+  service Service @relation(fields: [service_id], references: [service_id], onDelete: Cascade)
+  resource Resource @relation(fields: [resource_id], references: [resource_id], onDelete: Cascade)
   payments Payment[]
 }
 

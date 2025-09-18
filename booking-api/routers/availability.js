@@ -7,10 +7,10 @@ const AvailabilityController = require('../controller/availiability');
 router.post('/', auth(true), requirePersonal, AvailabilityController.createAvailability);
 
 // List availabilities (filterable by user_id, resource_id, day_of_week)
-router.get('/', auth(true), requirePersonal, AvailabilityController.getAllAvailabilities);
+router.get('/', auth(true), AvailabilityController.getAllAvailabilities);
 
 // Get availability by ID
-router.get('/:id', auth(true), requirePersonal, AvailabilityController.getAvailabilityById);
+router.get('/:id', auth(true), AvailabilityController.getAvailabilityById);
 
 // Update availability
 router.put('/:id', auth(true), requirePersonal, AvailabilityController.updateAvailability);

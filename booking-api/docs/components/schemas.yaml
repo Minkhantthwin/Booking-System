@@ -224,3 +224,68 @@ components:
           enum: [Mon, Tue, Wed, Thu, Fri, Sat, Sun]
         start_datetime: { type: string, format: date-time }
         end_datetime: { type: string, format: date-time }
+
+    BlockedSlot:
+      type: object
+      properties:
+        blocked_id: { type: integer }
+        user_id: { type: integer }
+        resource_id: { type: integer }
+        start_datetime: { type: string, format: date-time }
+        end_datetime: { type: string, format: date-time }
+    BlockedSlotCreateRequest:
+      type: object
+      required: [user_id, resource_id, start_datetime, end_datetime]
+      properties:
+        user_id: { type: integer }
+        resource_id: { type: integer }
+        start_datetime: { type: string, format: date-time }
+        end_datetime: { type: string, format: date-time }
+    BlockedSlotUpdateRequest:
+      type: object
+      properties:
+        user_id: { type: integer }
+        resource_id: { type: integer }
+        start_datetime: { type: string, format: date-time }
+        end_datetime: { type: string, format: date-time }
+
+    Booking:
+      type: object
+      properties:
+        booking_id: { type: integer }
+        customer_id: { type: integer }
+        staff_id: { type: integer }
+        resource_id: { type: integer }
+        service_id: { type: integer }
+        start_datetime: { type: string, format: date-time }
+        end_datetime: { type: string, format: date-time }
+        notes: { type: string, nullable: true }
+        status:
+          type: string
+          enum: [active, inactive]
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    BookingCreateRequest:
+      type: object
+      required: [customer_id, staff_id, resource_id, service_id, start_datetime, end_datetime]
+      properties:
+        customer_id: { type: integer }
+        staff_id: { type: integer }
+        resource_id: { type: integer }
+        service_id: { type: integer }
+        start_datetime: { type: string, format: date-time }
+        end_datetime: { type: string, format: date-time }
+        notes: { type: string }
+    BookingUpdateRequest:
+      type: object
+      properties:
+        customer_id: { type: integer }
+        staff_id: { type: integer }
+        resource_id: { type: integer }
+        service_id: { type: integer }
+        start_datetime: { type: string, format: date-time }
+        end_datetime: { type: string, format: date-time }
+        notes: { type: string }
+        status:
+          type: string
+          enum: [active, inactive]
