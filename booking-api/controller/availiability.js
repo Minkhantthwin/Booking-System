@@ -77,7 +77,7 @@ async function getAllAvailabilities(req, res) {
       orderBy: [{ day_of_week: 'asc' }, { start_datetime: 'asc' }]
     });
 
-    return res.status(200).json({ availabilities });
+    return res.status(200).json({ availability: availabilities });
   } catch (e) {
     console.error(e);
     return res.status(500).json({ message: 'Get all availabilities failed' });

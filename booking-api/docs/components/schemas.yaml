@@ -289,3 +289,122 @@ components:
         status:
           type: string
           enum: [active, inactive]
+          
+    AuditLog:
+      type: object
+      properties:
+        log_id: { type: integer }
+        user_id: { type: integer, nullable: true }
+        action: { type: string }
+        entity: { type: string, nullable: true }
+        entity_id: { type: integer, nullable: true }
+        details: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+    AuditLogCreateRequest:
+      type: object
+      required: [action]
+      properties:
+        user_id: { type: integer }
+        action: { type: string }
+        entity: { type: string }
+        entity_id: { type: integer }
+        details: { type: string }
+    AuditLogUpdateRequest:
+      type: object
+      properties:
+        user_id: { type: integer }
+        action: { type: string }
+        entity: { type: string }
+        entity_id: { type: integer }
+        details: { type: string }
+    AuditLogList:
+      type: object
+      properties:
+        logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditLog'
+        pagination:
+          type: object
+          properties:
+            page: { type: integer }
+            limit: { type: integer }
+            total: { type: integer }
+            totalPages: { type: integer }
+    AuditLogStats:
+      type: object
+      properties:
+        stats:
+          type: array
+          items:
+            type: object
+            properties:
+              action: { type: string }
+              count: { type: integer }
+
+    Payment:
+      type: object
+      properties:
+        payment_id: { type: integer }
+        booking_id: { type: integer }
+        amount: { type: number }
+        method:
+          type: string
+          enum: [credit_card, paypal, cash, bank_transfer]
+        status:
+          type: string
+          enum: [pending, paid, failed, refunded]
+        transaction_ref: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+    PaymentCreateRequest:
+      type: object
+      required: [booking_id, amount, method]
+      properties:
+        booking_id: { type: integer }
+        amount: { type: number, minimum: 0 }
+        method:
+          type: string
+          enum: [credit_card, paypal, cash, bank_transfer]
+        status:
+          type: string
+          enum: [pending, paid, failed, refunded]
+        transaction_ref: { type: string }
+    PaymentUpdateRequest:
+      type: object
+      properties:
+        booking_id: { type: integer }
+        amount: { type: number, minimum: 0 }
+        method:
+          type: string
+          enum: [credit_card, paypal, cash, bank_transfer]
+        status:
+          type: string
+          enum: [pending, paid, failed, refunded]
+        transaction_ref: { type: string, nullable: true }
+    PaymentList:
+      type: object
+      properties:
+        payments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Payment'
+        pagination:
+          type: object
+          properties:
+            page: { type: integer }
+            limit: { type: integer }
+            total: { type: integer }
+            totalPages: { type: integer }
+    PaymentStats:
+      type: object
+      properties:
+        stats:
+          type: array
+          items:
+            type: object
+            properties:
+              status:
+                type: string
+                enum: [pending, paid, failed, refunded]
+              count: { type: integer }
+              totalAmount: { type: number }

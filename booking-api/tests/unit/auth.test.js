@@ -12,6 +12,12 @@ app.use('/user', userRouter);
 
 describe('Authentication Tests', () => {
   let testUsersToCleanup = [];
+  let userRoleId;
+
+  beforeAll(async () => {
+    const role = await prisma.role.findFirst({ where: { name: 'User' } });
+    userRoleId = role.role_id;
+  });
 
   beforeEach(async () => {
     testUsersToCleanup = [];
@@ -25,7 +31,7 @@ describe('Authentication Tests', () => {
     describe('Successful Registration', () => {
       test('should register a new user with valid data', async () => {
         const userData = {
-          role_id: 1,
+          role_id: userRoleId,
           email: 'newuser@example.com',
           phone: '+1234567890',
           password: 'securePassword123',
@@ -53,7 +59,7 @@ describe('Authentication Tests', () => {
 
       test('should register user without optional phone number', async () => {
         const userData = {
-          role_id: 1,
+          role_id: userRoleId,
           email: 'nophone@example.com',
           password: 'securePassword123',
           name: 'No Phone User'
@@ -78,9 +84,10 @@ describe('Authentication Tests', () => {
           { password: 'password123' },
           { name: 'Test User' },
           { role_id: 1 },
-          { role_id: 1, email: 'test@example.com' },
-          { role_id: 1, password: 'password123' },
-          { role_id: 1, name: 'Test User' }
+          { role_id: userRoleId },
+          { role_id: userRoleId, email: 'test@example.com' },
+          { role_id: userRoleId, password: 'password123' },
+          { role_id: userRoleId, name: 'Test User' }
         ];
 
         for (const testCase of testCases) {
@@ -96,7 +103,7 @@ describe('Authentication Tests', () => {
 
       test('should return 400 for duplicate email', async () => {
         const userData = {
-          role_id: 1,
+          role_id: userRoleId,
           email: 'duplicate@example.com',
           password: 'password123',
           name: 'First User'

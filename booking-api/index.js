@@ -9,6 +9,8 @@ const { resourceRouter } = require('./routers/resource');
 const { availabilityRouter } = require('./routers/availability');
 const { bslotRouter } = require('./routers/bslot');
 const { bookingRouter } = require('./routers/booking');
+const { auditRouter } = require('./routers/audit');
+const { paymentRouter } = require('./routers/payment');
 
 const cors = require('cors');
 app.use(cors());
@@ -25,6 +27,9 @@ app.use("/availability", availabilityRouter);
 
 app.use("/bslot", bslotRouter);
 app.use("/booking", bookingRouter);
+
+app.use("/audit", auditRouter);
+app.use("/payment", paymentRouter);
 
 app.get('/info', (req, res) => {
   res.json({msg: 'Booking app'});

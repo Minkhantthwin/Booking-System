@@ -40,11 +40,11 @@ async function getResourceById(req, res){
 }
 
 async function updateResource(req, res) {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
     if (Number.isNaN(id) || id <= 0) {
         return res.status(400).json({ message: 'Valid resource ID required' });
     }
-    const { name, description } = req.body;
+    const { name, description, status } = req.body;
     const data = {};
     if (name !== undefined) {
         if (typeof name !== 'string' || name.trim() === '') {
@@ -57,6 +57,13 @@ async function updateResource(req, res) {
             return res.status(400).json({ message: 'Valid description required' });
         }
         data.description = description;
+    }
+    if (status !== undefined) {
+        const allowedStatuses = ['available', 'unavailable'];
+        if (!allowedStatuses.includes(status)) {
+            return res.status(400).json({ message: 'Invalid status value' });
+        }
+        data.status = status;
     }
     if (Object.keys(data).length === 0) {
         return res.status(400).json({ message: 'No valid fields to update' });
@@ -73,7 +80,7 @@ async function updateResource(req, res) {
         }
         console.error(e);
         res.status(500).json({ message: 'Resource update failed' });
-    }  
+    }
 }
 
 async function deleteResource(req, res) {

@@ -50,7 +50,7 @@ async function createBlockedSlot(req, res) {
             return res.status(409).json({ message: 'Overlapping blocked slot exists' });
         }
 
-        const newBlockedSlot = await prisma.blockedSlot.create({
+    const newBlockedSlot = await prisma.blockedSlot.create({
             data: {
                 user_id: Number(user_id),
                 resource_id: Number(resource_id),
@@ -58,7 +58,7 @@ async function createBlockedSlot(req, res) {
                 end_datetime: end
             }
         });
-        return res.status(201).json(newBlockedSlot);
+    return res.status(201).json({ blocked: newBlockedSlot });
 
     } catch (error) {
         console.error('Error creating blocked slot:', error);
@@ -88,11 +88,11 @@ async function getAllBlockedSlots(req, res) {
                 where.start_datetime = { lt: end };
             }
         }
-        const blockedSlots = await prisma.blockedSlot.findMany({ 
+    const blockedSlots = await prisma.blockedSlot.findMany({ 
             where,
             orderBy: [{ start_datetime: 'asc' }]
             });
-        return res.status(200).json(blockedSlots);
+    return res.status(200).json({ blocked: blockedSlots });
     } catch (error) {
         console.error('Error fetching blocked slots:', error);
         return res.status(500).json({ message: 'Failed to fetch blocked slots' });
@@ -225,7 +225,7 @@ async function checkOverlap(req, res) {
       orderBy: [{ start_datetime: 'asc' }]
     });
 
-    return res.status(200).json({ overlaps: overlapping, count: overlapping.length });
+    return res.status(200).json({ overlaps: overlapping, count: overlapping.length, hasConflict: overlapping.length > 0 });
   } catch (e) {
     console.error(e);
     return res.status(500).json({ message: 'Check overlap failed' });

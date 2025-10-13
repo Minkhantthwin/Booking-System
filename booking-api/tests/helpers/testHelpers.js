@@ -16,15 +16,24 @@ const prisma = new PrismaClient({
 
 class TestHelpers {
   static async createTestUser(userData = {}) {
+    let defaultRoleId = userData.role_id;
+    if (defaultRoleId === undefined) {
+      const userRole = await prisma.role.findFirst({ where: { name: 'User' } });
+      defaultRoleId = userRole ? userRole.role_id : undefined;
+    }
+
     const defaultUser = {
       email: `test${Date.now()}@example.com`,
       password: 'password123',
       name: 'Test User',
       phone: '+1234567890',
-      role_id: 1
+      role_id: defaultRoleId
     };
 
     const user = { ...defaultUser, ...userData };
+    if (user.role_id == null) {
+      throw new Error('User role_id must be provided or seed must include a User role');
+    }
     const hashedPassword = await bcrypt.hash(user.password, 10);
 
     return await prisma.user.create({
